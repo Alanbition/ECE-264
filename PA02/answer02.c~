@@ -1,0 +1,78 @@
+#include "answer02.h"
+
+// You can add more functions to this file.
+//
+// If you allocate for space, you are responsible for freeing the space
+// 
+// You will lose 50% points if the amount of allocated memory is not
+// determined by the size of the original deck.  To be more precise,
+// you will lose 50% point if you use 100, 1000, 10000 (or any other
+// fixed number) without clear explanation.
+//
+
+void repeatShuffle(CardDeck origdeck, int k)
+{
+  // origdeck contains the number of cards
+  // the number of upper-low deck pairs should be 
+  //     the number of cards - 1
+  // this function has the following steps:
+  //    if (k <= 0), no shuffling, print the only possible outcome
+  //    otherwise, 
+  //       for each pair of upper and lower decks, interleave the cards,
+  //           when the interleaving is complete, have to perform another 
+  //           k-1 rounds of shuffling with the new deck
+  //
+  // Print only the results obtained after k rounds of shuffling
+  // see interleave in PE05 and shuffle in PE06 for more details
+}
+
+// The following line must be above divideDeck
+#ifdef TEST_DIVIDE 
+void divideDeck(CardDeck origdeck, 
+		CardDeck * upperdeck, CardDeck * lowerdeck)
+{
+
+  int index1;
+  int index2;
+  int index3;
+  for(index1= 0; index1<origdeck.size -1; index1++)
+  {
+    upperdeck[index1].size = 0;
+	lowerdeck[index1].size = 0;
+
+	for(index2=0; index2 < index1 + 1; index2++)
+	{
+	  upperdeck[index1].cards[index2] = origdeck.cards[index2];
+	  upperdeck[index1].size ++;
+	}
+	for(index3 = 0; index3<origdeck.size -1 -index1;index3++)
+	{
+	  lowerdeck[index1].cards[index3] = origdeck.cards[index2+index3];
+	  lowerdeck[index1].size ++;
+	}
+  }
+  // if the original deck has n cards, there are n - 1 pairs of
+  // upper and low decks: 
+  // 1.   upper deck has 1 card,      low deck has n - 1 cards
+  // 2.   upper deck has 2 cards,     low deck has n - 2 cards
+  // 3.   upper deck has 3 cards,     low deck has n - 3 cards
+  // ...
+  // n-1. upper deck has n - 1 cards, low deck has 1 cards
+  
+  // upperdeck[0] should store the first card in the original deck
+  // upperdeck[1] should store the top two cards in the original deck
+  // upperdeck[2] should store the top three cards in the original deck
+
+  // be careful that in CardDeck, cards is an array (thus a pointer)
+}
+#endif
+// The previous line must be below divideDeck
+
+#ifdef TEST_INTERLEAVE
+// reuse what you wrote for PE05
+void helper(CardDeck upperdeck,CardDeck lowerdeck,CardDeck newcards,int upperdeck_index, int lowerdeck_index);
+
+void interleave(CardDeck upperdeck, 
+		CardDeck lowerdeck)
+{
+  // create a new deck storing the result

@@ -1,0 +1,50 @@
+==45069== Memcheck, a memory error detector
+==45069== Copyright (C) 2002-2012, and GNU GPL'd, by Julian Seward et al.
+==45069== Using Valgrind-3.8.1 and LibVEX; rerun with -h for copyright info
+==45069== Command: ./pe01
+==45069== Parent PID: 42832
+==45069== 
+==45069== Use of uninitialised value of size 8
+==45069==    at 0x38D2243A9B: _itoa_word (_itoa.c:195)
+==45069==    by 0x38D2246652: vfprintf (vfprintf.c:1640)
+==45069==    by 0x38D224F189: printf (printf.c:35)
+==45069==    by 0x400908: printArray (pe01.c:27)
+==45069==    by 0x400BEF: test_largest_partial_sum (pe01.c:115)
+==45069==    by 0x400CAA: test_00_largest_partial_sum (pe01.c:132)
+==45069==    by 0x400D79: main (pe01.c:174)
+==45069== 
+==45069== Conditional jump or move depends on uninitialised value(s)
+==45069==    at 0x38D2243AA5: _itoa_word (_itoa.c:195)
+==45069==    by 0x38D2246652: vfprintf (vfprintf.c:1640)
+==45069==    by 0x38D224F189: printf (printf.c:35)
+==45069==    by 0x400908: printArray (pe01.c:27)
+==45069==    by 0x400BEF: test_largest_partial_sum (pe01.c:115)
+==45069==    by 0x400CAA: test_00_largest_partial_sum (pe01.c:132)
+==45069==    by 0x400D79: main (pe01.c:174)
+==45069== 
+==45069== Conditional jump or move depends on uninitialised value(s)
+==45069==    at 0x38D22450E3: vfprintf (vfprintf.c:1640)
+==45069==    by 0x38D224F189: printf (printf.c:35)
+==45069==    by 0x400908: printArray (pe01.c:27)
+==45069==    by 0x400BEF: test_largest_partial_sum (pe01.c:115)
+==45069==    by 0x400CAA: test_00_largest_partial_sum (pe01.c:132)
+==45069==    by 0x400D79: main (pe01.c:174)
+==45069== 
+==45069== Conditional jump or move depends on uninitialised value(s)
+==45069==    at 0x38D2245101: vfprintf (vfprintf.c:1640)
+==45069==    by 0x38D224F189: printf (printf.c:35)
+==45069==    by 0x400908: printArray (pe01.c:27)
+==45069==    by 0x400BEF: test_largest_partial_sum (pe01.c:115)
+==45069==    by 0x400CAA: test_00_largest_partial_sum (pe01.c:132)
+==45069==    by 0x400D79: main (pe01.c:174)
+==45069== 
+==45069== 
+==45069== HEAP SUMMARY:
+==45069==     in use at exit: 0 bytes in 0 blocks
+==45069==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==45069== 
+==45069== All heap blocks were freed -- no leaks are possible
+==45069== 
+==45069== For counts of detected and suppressed errors, rerun with: -v
+==45069== Use --track-origins=yes to see where uninitialised values come from
+==45069== ERROR SUMMARY: 24 errors from 4 contexts (suppressed: 6 from 6)

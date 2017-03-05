@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct _fcknode{
+
+  long int *num;
+  int *chr;
+  int *total;
+}fcknode;
+
+typedef struct _realnode{
+
+  struct _realnode *next;
+  long int *realnum;
+  int *realchr;
+}realnode;
+//void lnode_print(const fcknode *list, void(*print_fn)(int*));
+void free_all_shit(fcknode *list, realnode *head);
+
+fcknode *out_put1(FILE *fptr, char *filename);
+realnode *out_put2(realnode **head, fcknode *list, int i, char *filename);

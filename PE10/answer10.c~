@@ -1,0 +1,318 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "answer10.h"
+
+fcknode *out_put1(FILE *fptr, char *filename)
+{
+  int ch=0;
+  int i;
+  int j = 0;
+  long int count;
+  FILE *fptrout;
+  fptrout = fopen(filename, "w");
+  fcknode *get = malloc(sizeof(fcknode));
+  long int *getnum = malloc(sizeof(long int) * 256);
+  get -> num = getnum;
+  int *getchr = malloc(sizeof(int) * 256);
+  get -> chr = getchr;
+  int *gettotal = malloc(sizeof(int));
+  get -> total = gettotal;
+  if( fptr == NULL){return NULL;}
+  
+  for(i=0;i < 256;i++)
+  {
+    fseek(fptr, 0, SEEK_SET);
+	count = 0;
+    while((ch = fgetc(fptr)) !=EOF)
+    {
+	  
+      if((ch == i)&&(ch != '\n')) 
+      {
+	    count++;
+	  }
+	}
+	fprintf(fptrout, "%ld\n",count);
+//	printf("%ld\n",count);
+	//Put count into linked list
+    if(count > 0)
+	{
+	   
+	  getnum[j] = count;
+	  getchr[j] = i;
+
+	  j++;
+	  *(get -> total) = j;
+	  printf("num=%ld, chr=%c, total=%d\n",get->num[j-1],get->chr[j-1],*(get->total));
+	  printf("+++++realnum=%ld,chr=%c,total=%d\n",count,i,j);
+	 }
+	}
+ // return new_node;
+ fclose(fptrout);
+ return get;
+ }
+ 
+
+ realnode *out_put2(realnode **head, fcknode *list,int i, char *filename)
+ {
+/* remove the first lnode in a priority queue (PQ) implemented as a      */
+/* linked list                                                           */
+   tnode * new_tree = malloc(sizeof(tnode));
+   if(new_tree == NULL){
+     return NULL;
+   }
+   new_tree -> left = NULL;
+   new_tree -> right = NULL;
+   new_tree -> tnum = list->num[i];
+   new_tree -> tchr = list->chr[i];
+
+  
+   realnode * new_shit = malloc(sizeof(realnode));
+   if(new_shit == NULL)
+   {
+    free(new_shit);
+    return NULL;
+   }
+   new_shit -> next = NULL;
+   new_shit -> callt = new_tree;
+
+
+   if(list == NULL)
+   {
+    return NULL;
+   }
+
+   // case 1: empty list to begin with
+
+   if (*head == NULL) {
+      *head = new_shit;
+      return new_shit;
+   }
+
+   // case 2: non-empty list
+
+   realnode *prev = NULL;
+   realnode *curr = *head;
+   while (curr != NULL) {
+   //   if (strcmp(curr->str, str) >= 0) {
+	//  printf("realnum=%ld, realchr=%c, list=%ld,listchr=%c\n",((curr->callt)->tnum),((curr->callt)->tchr),(list->num[i]),(list->chr[i]));
+	  if (((curr->callt)->tnum) - ((list->num[i])) >= 0){
+         break;
+      }
+	  else {
+         prev = curr;
+         curr = curr->next;
+      }
+   }
+   new_shit->next = curr;
+   if (prev != NULL) {
+      prev->next = new_shit;
+   } else {
+      *head = new_shit;
+   }
+     printf("finalnum=%ld, finalchr=%c\n",((new_shit->callt)->tnum),((new_shit->callt)->tchr));
+	
+   return new_shit;
+	 
+}
+
+
+
+void free_all_shit(fcknode *list)
+{
+   free(list->chr);
+   free(list->num);
+   free(list->total);
+   free(list);
+}
+
+
+void link_destroy(realnode *list, void(*destroy_fn)(void *))
+{
+//	while(list != NULL)
+	{
+   // realnode *cur = list->next;
+//	destroy_fn(list->callt);
+//	destroy_tree(list->callt);
+//	free(list->callt);
+	free(list);
+//	list = cur;
+    }
+  return;
+}
+
+void destroy_fn(void *varf)
+{
+      return;
+}
+
+void destroy_tree(tnode *head)
+{
+   if(head == NULL){
+   return;
+   }
+   destroy_tree(head->left);
+   destroy_tree(head->right);
+   free(head);
+}
+
+
+tnode * tree_merge(tnode * tn1, tnode * tn2)
+{
+  tnode * tn = malloc(sizeof(tnode));
+  tn -> left = tn1;
+  tn -> right = tn2;
+//  tn -> value = 0; // do not care
+  tn -> tnum = tn1 -> tnum + tn2 -> tnum;
+  return tn;
+}
+                       
+ realnode *stack_pop(realnode **head)
+{
+   if(*head == NULL)
+   {
+     return NULL;
+   }
+   realnode *list3 = *head;
+   *head = list3->next;
+   list3->next = NULL;
+
+   return list3;
+}
+
+
+
+void put_tree(realnode **head)
+{
+  realnode *headnow = *head;
+  printf("%c",headnow->callt->tchr);
+  realnode *sorthead = NULL;
+  while(headnow->next != NULL){
+  realnode *oldhead1 = stack_pop(&headnow);
+  realnode *oldhead2 = stack_pop(&headnow);
+ 
+  tnode * new_node = tree_merge(oldhead1->callt, oldhead2->callt);
+   
+  sort_tree(&sorthead,new_node);
+  free(oldhead1);
+  free(oldhead2);
+//  realnode *oldhead;
+ // oldhead = stack_pop(&headnow);
+ // link_destroy(oldhead, destroy_fn);  
+  //oldhead = stack_pop(&headnow);
+ // link_destroy(oldhead, destroy_fn);
+  }
+}
+
+void encode_tree(tnode *tree,char path[], int index, FILE *lastptr)
+{
+  if(tree == NULL){
+  return;
+  }
+  if((tree->left == NULL) &&(tree->right ==NULL))
+  {
+    fseek(lastptr, 0, SEEK_END);
+	fprintf(lastptr,"%c:",tree->tchr);
+	int i;
+	for(i = 0;i<index; i++)
+	{
+	   if(path[i] == '0' || path[i] =='1');
+	   {
+	     fputc(path[i],lastptr);
+	   }
+	}
+	fputc(path[i],lastptr);
+	return;
+   }
+   path[index] = '0';
+   encode_tree(tree->left, path, index+1, lastptr);
+   path[index] = '1';
+   encode_tree(tree->right, path, index+1, lastptr);
+}
+
+
+void lastcall(realnode **head, char *outfor3)
+{
+   FILE *lastptr;
+   char putarray[256];
+   realnode *replacehead = *head;
+   lastptr = fopen(outfor3, "w");
+   if(lastptr == NULL){
+    fclose(lastptr);
+    return;
+   }
+   put_tree(&replacehead);
+   fseek(lastptr, 0, SEEK_SET);
+   encode_tree(replacehead->callt,putarray,0,lastptr);
+   destroy_tree(replacehead->callt);
+   link_destroy(replacehead, destroy_fn);
+   fclose(lastptr);
+   return;
+}
+
+
+
+
+ realnode *sort_tree(realnode **head,tnode *new_node)
+ {
+/* remove the first lnode in a priority queue (PQ) implemented as a      */
+/* linked list                                                           */
+/* tnode * new_tree = malloc(sizeof(tnode));
+   new_tree -> left = NULL;
+   new_tree -> right = NULL;
+   new_tree -> tnum = list->num[i];
+   new_tree -> tchr = list->chr[i];
+*/
+   if(new_node == NULL){
+     return NULL;
+    }
+   realnode * new_shit = malloc(sizeof(realnode));
+   if(new_shit == NULL)
+   {
+    return NULL;
+   }
+   new_shit -> callt = new_node;
+   new_shit -> next = NULL;
+
+   // case 1: empty list to begin with
+
+   if (*head == NULL) {
+      *head = new_shit;
+      return new_shit;
+   }
+
+   // case 2: non-empty list
+
+   realnode *prev = NULL;
+   realnode *curr = *head;
+   while (curr != NULL) {
+   //   if (strcmp(curr->str, str) >= 0) {
+//	  printf("realnum=%ld, realchr=%c, list=%ld,listchr=%c\n",((curr->callt)->tnum),((curr->callt)->tchr),(list->num[i]),(list->chr[i]));
+	  if (((curr->callt)->tnum) - ((new_node)->tnum) >= 0){
+         break;
+      }
+	  else {
+         prev = curr;
+         curr = curr->next;
+      }
+   }
+   new_shit->next = curr;
+   if (prev != NULL) {
+      prev->next = new_shit;
+   } else {
+      *head = new_shit;
+   }
+
+   return new_shit;
+}
+
+
+
+
+   
+
+
+
+
+
+
+ 
